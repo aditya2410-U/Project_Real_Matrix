@@ -36,5 +36,5 @@ Our goal is to create an all-in-one IDE-like platform where developers can colla
 
 ---
 
-## **Contributors** Team Matrix 2024
+## **Contribution:** Team Matrix 2024
 
