@@ -1,5 +1,7 @@
 ## Matrix
 
+### **Project Plan(Timeline has been added)**
+
 ### **Project Overview**
 The Code Collab Project is a real-time code collaboration tool aimed at providing developers with a seamless environment for writing and sharing code. This tool integrates features like live code editing, real-time communication, and code versioning to facilitate team collaboration.
 
