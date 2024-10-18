@@ -34,6 +34,10 @@ Our goal is to create an all-in-one IDE-like platform where developers can colla
 - **Firebase**: Cloud database for managing user authentication and real-time data syncing.
 - **Redis**: Used for caching and session management to boost performance.
 
+  ### **Road Map**
+  ![image](https://github.com/user-attachments/assets/1cda81ac-9e14-4fd8-8891-2319158ef50d)
+
+
 ---
 
 ## **Contribution:** Team Matrix 2024
