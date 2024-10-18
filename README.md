@@ -35,7 +35,9 @@ Our goal is to create an all-in-one IDE-like platform where developers can colla
 - **Redis**: Used for caching and session management to boost performance.
 
   ### **Road Map**
-  ![image](https://github.com/user-attachments/assets/1cda81ac-9e14-4fd8-8891-2319158ef50d)
+![image](https://github.com/user-attachments/assets/576fc86c-6b8f-4a32-b5cc-43134e4cbdb7)
+
+
 
 
 ---
