@@ -1,5 +1,8 @@
 ## Matrix
 
+### Google docs link 
+https://docs.google.com/document/d/13v6DH98zGsx6AfK2jM69DsqAqg7x6o0ZJOStrtNEYJQ/edit?tab=t.0
+
 ### **Project Plan(Timeline has been added)**
 
 ### **Project Overview**
