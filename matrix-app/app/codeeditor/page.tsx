@@ -1,9 +1,10 @@
 import React from 'react'
+import EditorComponent from './components/editorComponent'
 
 const page = () => {
   return (
-    <div>
-        This is code editor page.
+    <div className=''>
+     <EditorComponent/>
     </div>
   )
 }
