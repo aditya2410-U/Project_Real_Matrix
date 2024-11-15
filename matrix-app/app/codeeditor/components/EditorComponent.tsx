@@ -1,4 +1,5 @@
 import React from 'react';
+import SelectLanguage from './SelectLanguage';
 
 export default function EditorComponent() {
   return (
@@ -7,6 +8,9 @@ export default function EditorComponent() {
         <h2 className="text-4xl font-semibold tracking-tight text-white">
           Codex
         </h2>
+        <div className='flex'>
+        <SelectLanguage/>
+        </div>
       </div>
     </div>
   );
