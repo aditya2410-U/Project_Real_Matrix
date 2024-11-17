@@ -1,3 +1,6 @@
+// components/EditorComponent.tsx
+"use client";
+
 import React from "react";
 import SelectLanguage from "./SelectLanguage";
 import {
@@ -5,11 +8,14 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "../components/ResizableComponent";
+import Editor from "@monaco-editor/react";
+import Button from "@mui/material/Button";
+import PlayArrow from "@mui/icons-material/PlayArrow";
 
 export default function EditorComponent() {
   return (
     <div className="h-[695px] bg-slate-900 rounded-3xl shadow-2xl py-6 px-8 overflow-hidden">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between py-3">
         <h2 className="text-3xl font-semibold tracking-tight text-white">
           Codex
         </h2>
@@ -24,17 +30,35 @@ export default function EditorComponent() {
           className="w-full rounded-lg border border-black md:min-w-[450px]"
         >
           <ResizablePanel defaultSize={50} minSize={35}>
-            <div className="flex h-[200px] items-center justify-center p-6 bg-slate-800 border border-black">
-              <span className="font-semibold text-white">One</span>
-            </div>
+            <Editor
+              theme="vs-dark"
+              height="90vh"
+              defaultLanguage="javascript"
+              defaultValue="// some comment"
+            />
           </ResizablePanel>
 
           {/* Adjusted handle style to match black border */}
           <ResizableHandle className="bg-black w-2" />
 
           <ResizablePanel defaultSize={50} minSize={35}>
-            <div className="flex h-[200px] items-center justify-center p-6 bg-slate-800 border border-black">
-              <span className="font-semibold text-white">Two</span>
+            {/* head */}
+            <div className="p-4">
+              <div className="flex items-center justify-between bg-slate-900 px-6 py-2">
+                <h2 className="text-white text-xl font-semibold">Output</h2>
+                <Button
+                  variant="contained"
+                  className="bg-purple-800 hover:bg-purple-500 text-white" // Dark purple normal, light purple on hover
+                  startIcon={<PlayArrow />}
+                >
+                  Run
+                </Button>
+              </div>
+              <div className="h-full bg-slate-900 mt-4 p-6 rounded-lg">
+                <h2 className="text-white text-xl font-semibold text-center">
+                  Hello World
+                </h2>
+              </div>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
