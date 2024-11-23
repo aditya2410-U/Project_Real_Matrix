@@ -1,7 +1,7 @@
 // components/EditorComponent.tsx
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import SelectLanguage from "./SelectLanguage";
 import {
   ResizablePanelGroup,
@@ -13,6 +13,26 @@ import Button from "@mui/material/Button";
 import PlayArrow from "@mui/icons-material/PlayArrow";
 
 export default function EditorComponent() {
+  const [sourceCode, setSourceCode] = useState("");
+  const [languageOptions,setLanguageOption] = useState([languageOptions[0]]);
+  const editorRef = useRef(null);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleEditorDidMount(editor: any) {
+    editorRef.current = editor;
+    editor.focus();
+  }
+
+  function handleOnChange(value: string | undefined) {
+    if (value) {
+      setSourceCode(value);
+    }
+  }
+
+  function onSelect(value: string){
+    setLanguageOption(value);
+  }
+
   return (
     <div className="h-[695px] bg-slate-900 rounded-3xl shadow-2xl py-6 px-8 overflow-hidden">
       <div className="flex items-center justify-between py-3">
@@ -33,8 +53,10 @@ export default function EditorComponent() {
             <Editor
               theme="vs-dark"
               height="90vh"
-              defaultLanguage="javascript"
-              defaultValue="// some comment"
+              defaultLanguage={languageOptions.language}
+              defaultValue={sourceCode}
+              onMount={handleEditorDidMount}
+              onChange={handleOnChange}
             />
           </ResizablePanel>
 
