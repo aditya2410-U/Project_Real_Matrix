@@ -57,6 +57,7 @@ export default function EditorComponent() {
       setLoading(false);
       setErr(false);
       toast.success("Compiled Successfully");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setErr(true);
       setLoading(false);

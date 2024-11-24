@@ -1,9 +1,11 @@
 import React from 'react'
 import EditorComponent from './components/EditorComponent'
+import { Toaster } from 'react-hot-toast'
 
 const EditSpace = () => {
   return (
-    <div>
+    <div >
+      <Toaster />
      <EditorComponent/>
     </div>
   )
