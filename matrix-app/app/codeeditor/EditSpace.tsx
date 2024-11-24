@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast'
 
 const EditSpace = () => {
   return (
-    <div>
+    <div >
       <Toaster />
      <EditorComponent/>
     </div>
