@@ -53,18 +53,26 @@ export default function EditorComponent() {
     };
     try {
       const result = await compileCode(requestData);
-      setOutput(result.run.output.split("\n"));
+      
+      if (result.run.code === 0) {
+        setErr(false); // Set error state to false if run is 1
+        setOutput(result.run.output.split("\n"));
+        toast.success("Compiled Successfully");
+      } else {
+        setErr(true); // Set error state to true if run is not 1
+        toast.error("Failed to compile the Code");
+      }
+    
       setLoading(false);
-      setErr(false);
-      toast.success("Compiled Successfully");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      console.log(result);
     } catch (error) {
       setErr(true);
       setLoading(false);
       toast.error("Failed to compile the Code");
+      console.log(error);
     }
   }
-  
+
   return (
     <div className="h-[695px] bg-slate-900 rounded-3xl shadow-2xl py-6 px-8 overflow-hidden">
       <div className="flex items-center justify-between py-3">
@@ -98,8 +106,8 @@ export default function EditorComponent() {
           <ResizableHandle className="bg-black w-2" />
 
           <ResizablePanel defaultSize={50} minSize={35}>
-          <div className="space-y-3 bg-slate-900 min-h-screen">
-          <div className="flex items-center justify-between  bg-slate-950 px-6 py-2">
+            <div className="space-y-3 bg-slate-900 min-h-screen">
+              <div className="flex items-center justify-between  bg-slate-950 px-6 py-2">
                 <h2 className="text-white text-xl font-semibold">Output</h2>
                 {loading ? (
                   <Button
@@ -130,9 +138,12 @@ export default function EditorComponent() {
                   </div>
                 ) : (
                   <>
-                    {output.map((item) => {
+                    {output.map((item, index) => {
                       return (
-                        <p className="text-sm text-green-500"  key={item}>
+                        <p
+                          className="text-sm text-green-500"
+                          key={`${item}-${index}`}
+                        >
                           {item}
                         </p>
                       );
