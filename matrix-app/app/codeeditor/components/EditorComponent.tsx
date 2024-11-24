@@ -1,8 +1,6 @@
-// components/EditorComponent.tsx
 "use client";
-
 import React, { useRef, useState } from "react";
-import SelectLanguage from "./SelectLanguage";
+import SelectLanguage, { selectedLanguageOptionProps } from "./SelectLanguage";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -11,13 +9,15 @@ import {
 import Editor from "@monaco-editor/react";
 import Button from "@mui/material/Button";
 import PlayArrow from "@mui/icons-material/PlayArrow";
+import { codeSnippets, languageOptions } from "@/config/config";
 
 export default function EditorComponent() {
-  const [sourceCode, setSourceCode] = useState("");
-  const [languageOptions,setLanguageOption] = useState([languageOptions[0]]);
+  const [sourceCode, setSourceCode] = useState(
+    codeSnippets[languageOptions[0].language]
+  );
+  const [languageOption, setLanguageOption] = useState(languageOptions[0]);
   const editorRef = useRef(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleEditorDidMount(editor: any) {
     editorRef.current = editor;
     editor.focus();
@@ -29,8 +29,9 @@ export default function EditorComponent() {
     }
   }
 
-  function onSelect(value: string){
+  function onSelect(value: selectedLanguageOptionProps) {
     setLanguageOption(value);
+    setSourceCode(codeSnippets[value.language]);
   }
 
   return (
@@ -40,7 +41,7 @@ export default function EditorComponent() {
           Codex
         </h2>
         <div className="flex">
-          <SelectLanguage />
+          <SelectLanguage onSelect={onSelect} selectedLanguageOption={languageOption} />
         </div>
       </div>
       {/* This is the resizable component */}
@@ -53,24 +54,22 @@ export default function EditorComponent() {
             <Editor
               theme="vs-dark"
               height="90vh"
-              defaultLanguage={languageOptions.language}
-              defaultValue={sourceCode}
+              language={languageOption.language}
+              value={sourceCode}
               onMount={handleEditorDidMount}
               onChange={handleOnChange}
             />
           </ResizablePanel>
 
-          {/* Adjusted handle style to match black border */}
           <ResizableHandle className="bg-black w-2" />
 
           <ResizablePanel defaultSize={50} minSize={35}>
-            {/* head */}
             <div className="p-4">
               <div className="flex items-center justify-between bg-slate-900 px-6 py-2">
                 <h2 className="text-white text-xl font-semibold">Output</h2>
                 <Button
                   variant="contained"
-                  className="bg-purple-800 hover:bg-purple-500 text-white" // Dark purple normal, light purple on hover
+                  className="bg-purple-800 hover:bg-purple-500 text-white"
                   startIcon={<PlayArrow />}
                 >
                   Run

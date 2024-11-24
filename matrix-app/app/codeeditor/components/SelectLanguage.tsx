@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Label,
   Listbox,
@@ -11,11 +10,26 @@ import {
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { languageOptions } from "@/config/config";
 
-export default function SelectLanguage() {
-  const [selected, setSelected] = useState(languageOptions[0]);
+export type selectedLanguageOptionProps = {
+  language: string;
+  version: string;
+  aliases: string[];
+  runtime?: string;
+};
+
+
+export default function SelectLanguages({
+  onSelect,
+  selectedLanguageOption,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSelect: any;
+  selectedLanguageOption: selectedLanguageOptionProps;
+}) {
+
 
   return (
-    <Listbox value={selected} onChange={setSelected}>
+    <Listbox value={selectedLanguageOption} onChange={onSelect}>
       <Label className="block text-sm/6 font-medium text-gray-900">
         Assigned to
       </Label>
@@ -23,7 +37,7 @@ export default function SelectLanguage() {
         <ListboxButton className="relative min-w-[150px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm">
           <span className="flex items-center">
             <span className="ml-3 block truncate capitalize">
-              {selected.language} ({selected.version})
+              {selectedLanguageOption.language} ({selectedLanguageOption.version})
             </span>
           </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
