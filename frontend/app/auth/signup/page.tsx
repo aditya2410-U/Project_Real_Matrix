@@ -1,10 +1,27 @@
 "use client";
 
 import Layout from '../layout';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+
 export default function AuthPage() {
+
+  const [message, setMessage] = useState("");
+
+    useEffect(() => {
+      try{
+        fetch("http://localhost:8081/api/hello")
+            .then((response) => 
+              response.json()
+)
+            .then((data) => setMessage(data.message));
+          }
+          catch(e){
+            console.log("this is error: ", e);
+          }
+    }, []);
+
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -104,6 +121,8 @@ export default function AuthPage() {
               />
             </div>
           )}
+
+<div>{ `${message} from backend `   || "Loading from backend..."}</div>
 
           <button type="submit" className="submit-btn"  >
             {"Sign up" }
