@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 
 export default function AuthPage() {
   const router = useRouter();
-  const [isSignup, setIsSignup] = useState(true); // Toggle between Signup and Login
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -26,45 +25,46 @@ export default function AuthPage() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    router.push("/codeeditor");
 
     // Basic validation
-    if (isSignup && formData.password !== formData.passwordAgain) {
-      setMsg("Passwords do not match.");
-      return;
-    }
+    // if (formData.password !== formData.passwordAgain) {
+    //   setMsg("Passwords do not match.");
+    //   return;
+    // }
 
-    // Reset message
-    setMsg("");
+    // // Reset message
+    // setMsg("");
 
-    // Call your API endpoint
-    try {
-      const res = await fetch(`/api/${isSignup ? 'signup' : 'login'}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-        }),
-      });
+    // // Call your API endpoint
+    // try {
+    //   const res = await fetch(`/api/${'login'}`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       username: formData.username,
+    //       password: formData.password,
+    //     }),
+    //   });
 
-      const result = await res.json();
+    //   const result = await res.json();
 
-      if (res.ok) {
-        router.push("/dashboard"); // Redirect after successful login/signup
-      } else {
-        setMsg(result.message || "An error occurred.");
-      }
-    } catch (error) {
-      setMsg("An error occurred while processing your request.");
-    }
+    //   if (res.ok) {
+    //     router.push("/codeeditor"); // Redirect after successful login/signup
+    //   } else {
+    //     setMsg(result.message || "An error occurred.");
+    //   }
+    // } catch (error) {
+    //   setMsg("An error occurred while processing your request.");
+    // }
   };
 
   return (
-    <Layout pageTitle={isSignup ? "Signup" : "Login"}>
+<>
       <div className="auth-container">
-        <h2 className="auth-title">{isSignup ? "Sign up" : "Login"}</h2>
+        <h2 className="auth-title">{"Login"}</h2>
 
         {msg && <p className="error-message">{msg}</p>}
 
@@ -91,35 +91,22 @@ export default function AuthPage() {
             />
           </div>
 
-          {isSignup && (
-            <div className="form-group">
-              <input
-                name="passwordAgain"
-                type="password"
-                value={formData.passwordAgain}
-                onChange={handleInputChange}
-                placeholder="Confirm Password"
-                required
-              />
-            </div>
-          )}
-
+          
           <button type="submit" className="submit-btn">
-            {isSignup ? "Sign up" : "Log in"}
+            { "Log in"}
           </button>
         </form>
 
         <div className="toggle-auth">
           <p>
-            {isSignup
-              ? "Already have an account? "
-              : "Don't have an account? "}
+            {
+               "Don't have an account? "}
             <button
               type="button"
               className="toggle-btn"
-              onClick={() => setIsSignup((prev) => !prev)}
+              onClick={() => router.push("/auth/signup")}
             >
-              {isSignup ? "Log in" : "Sign up"}
+              { "Sign up"}
             </button>
           </p>
         </div>
@@ -195,6 +182,6 @@ export default function AuthPage() {
           text-decoration: underline;
         }
       `}</style>
-    </Layout>
+</>
   );
 }

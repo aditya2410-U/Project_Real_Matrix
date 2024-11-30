@@ -5,7 +5,7 @@ import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
-} from "../components/ResizableComponent";
+} from "./ResizableComponent";
 import Editor from "@monaco-editor/react";
 import Button from "@mui/material/Button";
 import PlayArrow from "@mui/icons-material/PlayArrow";
