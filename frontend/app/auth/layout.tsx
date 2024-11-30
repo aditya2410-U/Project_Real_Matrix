@@ -29,10 +29,10 @@ const Layout: React.FC<LayoutProps> = ({ children, pageTitle, pageDescription })
                     <Link href="/" style={styles.navLink}>
                         Home
                     </Link>
-                    <Link href="/signup" style={styles.navLink}>
+                    <Link href="/auth/signup" style={styles.navLink}>
                         Sign Up
                     </Link>
-                    <Link href="/login" style={styles.navLink}>
+                    <Link href="/auth/login" style={styles.navLink}>
                         Log In
                     </Link>
                 </nav>

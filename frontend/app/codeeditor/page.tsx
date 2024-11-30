@@ -2,7 +2,7 @@ import React from 'react'
 import EditorComponent from './components/EditorComponent'
 import { Toaster } from 'react-hot-toast'
 
-const EditSpace = () => {
+export default function EditSpace () {
   return (
     <div >
       <Toaster />
@@ -11,4 +11,3 @@ const EditSpace = () => {
   )
 }
 
-export default EditSpace
