@@ -82,9 +82,6 @@
 //   return context;
 // };
 
-
-
-
 // "use client";
 // import { useState } from "react";
 // // import { useAuth } from "../context/AuthContext";
@@ -182,8 +179,6 @@
 //     </div>
 //   );
 // }
-
-
 
 // // pages/register.tsx
 // "use client";
@@ -341,9 +336,6 @@
 //     </div>
 //   );
 // }
-
-
-
 
 "use client";
 

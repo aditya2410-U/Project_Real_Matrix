@@ -314,20 +314,20 @@ import LoginForm from "@/components/ui/LoginForm";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
- function Login() {
-   const router = useRouter();
+function Login() {
+  const router = useRouter();
 
-   useEffect(() => {
-     const user = localStorage.getItem("user");
-     if (user) {
-       router.push("/codeeditor"); // Redirect if already logged in
-     }
-   }, [router]);
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      router.push("/codeeditor"); // Redirect if already logged in
+    }
+  }, [router]);
 
-   return (
-     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-       <LoginForm />
-     </div>
-   );
- }
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <LoginForm />
+    </div>
+  );
+}
 export default Login;

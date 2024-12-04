@@ -10,7 +10,6 @@
 //   );
 // }
 
-
 // "use client";
 // import React from "react";
 // import { AuthProvider } from "../context/AuthContext";
@@ -54,21 +53,20 @@
 //   );
 // }
 
-
-'use client';
+"use client";
 
 // import LoginForm from '../components/LoginForm';
-import LoginForm from '@/components/ui/LoginForm';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import LoginForm from "@/components/ui/LoginForm";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     if (user) {
-      router.push('/codeeditor'); // Redirect if already logged in
+      router.push("/codeeditor"); // Redirect if already logged in
     }
   }, [router]);
 
@@ -78,3 +76,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default MyApp;
