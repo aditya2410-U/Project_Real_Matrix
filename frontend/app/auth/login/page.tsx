@@ -186,12 +186,11 @@
 // }
 
 
-
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { AuthProvider } from "@/context/AuthContext";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -199,13 +198,14 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
-  // const router = useRouter();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
+    // Basic validation
     if (!email || !password) {
       setError("Please enter both email and password");
       setIsLoading(false);
@@ -214,12 +214,10 @@ export default function Login() {
 
     try {
       await login(email, password);
-      // Login success is handled in the AuthContext (redirects to dashboard)
+      // Note: Redirect is now handled in AuthContext
     } catch (err: any) {
       const errorMessage =
-        err.response?.data?.error ||
-        err.message ||
-        "An unexpected error occurred";
+        err instanceof Error ? err.message : "An unexpected error occurred";
 
       setError(errorMessage);
       setIsLoading(false);
@@ -227,87 +225,85 @@ export default function Login() {
   };
 
   return (
-    <AuthProvider>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded shadow-md w-96">
-          <h2 className="text-2xl mb-4 text-center">Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-96">
+        <h2 className="text-2xl mb-4 text-center">Login</h2>
 
-          {error && (
-            <div
-              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-              role="alert"
+        {error && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+            role="alert"
+          >
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="email"
+              className="block text-gray-700 text-sm font-bold mb-2"
             >
-              <span className="block sm:inline">{error}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-gray-700 text-sm font-bold mb-2"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-                disabled={isLoading}
-              />
-            </div>
-
-            <div className="mb-6">
-              <label
-                htmlFor="password"
-                className="block text-gray-700 text-sm font-bold mb-2"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-                disabled={isLoading}
-              />
-              <a
-                href="/forgot-password"
-                className="text-xs text-blue-500 hover:text-blue-700"
-              >
-                Forgot Password?
-              </a>
-            </div>
-
-            <button
-              type="submit"
-              className={`w-full py-2 rounded text-white font-bold transition duration-300 ${
-                isLoading
-                  ? "bg-blue-300 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
               disabled={isLoading}
-            >
-              {isLoading ? "Logging in..." : "Login"}
-            </button>
-          </form>
+            />
+          </div>
 
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/auth/register"
-              className="text-blue-500 hover:text-blue-700 font-bold"
+          <div className="mb-6">
+            <label
+              htmlFor="password"
+              className="block text-gray-700 text-sm font-bold mb-2"
             >
-              Register
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              disabled={isLoading}
+            />
+            <Link
+              href="/forgot-password"
+              className="text-xs text-blue-500 hover:text-blue-700"
+            >
+              Forgot Password?
             </Link>
           </div>
+
+          <button
+            type="submit"
+            className={`w-full py-2 rounded text-white font-bold transition duration-300 ${
+              isLoading
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/auth/register"
+            className="text-blue-500 hover:text-blue-700 font-bold"
+          >
+            Register
+          </Link>
         </div>
       </div>
-    </AuthProvider>
+    </div>
   );
 }

@@ -236,7 +236,7 @@ export default function Register() {
 
       if (response.ok) {
         // Redirect to login or dashboard
-        router.push("/auth/login");
+        router.push("/");
       } else {
         setError(data.message || "Registration failed");
       }
@@ -333,10 +333,7 @@ export default function Register() {
           </div>
         </form>
         <div className="text-center">
-          <Link
-            href="/auth/login"
-            className="text-indigo-600 hover:text-indigo-500"
-          >
+          <Link href="/" className="text-indigo-600 hover:text-indigo-500">
             Already have an account? Login
           </Link>
         </div>

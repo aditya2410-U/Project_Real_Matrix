@@ -10,9 +10,32 @@
 //   );
 // }
 
-import React from "react";
-import { AuthProvider } from "../context/AuthContext";
-import Login from "./auth/login/page";
+
+// "use client";
+// import React from "react";
+// import { AuthProvider } from "../context/AuthContext";
+// import Login from "./auth/login/page";
+
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <html lang="en">
+//       <body>
+//         <AuthProvider>
+//           <Login />
+//           {children}
+//         </AuthProvider>
+//       </body>
+//     </html>
+//   );
+// }
+
+'use client';
+import { AuthProvider } from '@/context/AuthContext';
+import Login from './auth/login/page';
 
 export default function RootLayout({
   children,
@@ -23,8 +46,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthProvider>
-          <Login />
           {children}
+          <Login />
         </AuthProvider>
       </body>
     </html>

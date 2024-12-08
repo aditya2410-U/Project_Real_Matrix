@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const API_URL = 'http://localhost:8080/auth';
+const API_URL = 'http://localhost:8083/api/auth';
 
 // Create axios instance
 const api = axios.create({
@@ -22,7 +22,7 @@ api.interceptors.request.use(
 
 // Authentication APIs
 export const login = async (email: string, password: string) => {
-  const response = await api.post('/auth/login', { email, password });
+  const response = await api.post('/login', { email, password });
   return response.data;
 };
 

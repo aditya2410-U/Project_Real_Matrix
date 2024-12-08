@@ -23,35 +23,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    // Check token and verify on initial load
-    const token = Cookies.get("token");
-    if (token) {
-      verifyToken(token)
-        .then((userData) => {
-          setUser(userData);
-        })
-        .catch(() => {
-          // Token is invalid, logout
-          logout();
-        });
+    // Only run on client-side
+    if (typeof window !== "undefined") {
+      const token = Cookies.get("token");
+      if (token) {
+        verifyToken(token)
+          .then((userData) => {
+            setUser(userData);
+          })
+          .catch(() => {
+            logout();
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      } else {
+        setIsLoading(false);
+      }
     }
   }, []);
 
   const loginHandler = async (email: string, password: string) => {
     try {
       const { token, user_id } = await login(email, password);
-
-      // Store token in cookie
-      Cookies.set("token", token, { expires: 1 }); // 1 day expiry
-
-      // Set user state
+      Cookies.set("token", token, { expires: 1 });
       setUser({ id: user_id, email });
-
-      // Redirect to dashboard
-      router.push("/dashboard");
+      router.push("/codeeditor");
     } catch (error) {
       throw new Error("Login failed");
     }
@@ -60,8 +61,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const registerHandler = async (email: string, password: string) => {
     try {
       await register(email, password);
-
-      // Automatically log in after registration
       await loginHandler(email, password);
     } catch (error) {
       throw new Error("Registration failed");
@@ -69,17 +68,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const logout = () => {
-    // Remove token and user data
     Cookies.remove("token");
     setUser(null);
-
-    // Redirect to login
     router.push("/auth/login");
   };
 
   const isAuthenticated = () => {
-    return !!Cookies.get("token");
+    return typeof window !== "undefined" && !!Cookies.get("token");
   };
+
+  // Prevent rendering until client-side check is complete
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <AuthContext.Provider
@@ -96,12 +97,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-// Custom hook to use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  console.log("AuthContext value:", context);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+
+  // if (context === undefined) {
+  //   throw new Error("useAuth must be used within an AuthProvider");
+  // }
+
   return context;
 };
