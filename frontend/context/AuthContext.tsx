@@ -1,5 +1,6 @@
+"use client";
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { login, register, verifyToken } from "../services/api";
 
@@ -73,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(null);
 
     // Redirect to login
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   const isAuthenticated = () => {
@@ -98,6 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 // Custom hook to use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  console.log("AuthContext value:", context);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }

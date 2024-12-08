@@ -1,25 +1,32 @@
-// import React from 'react';
+// import React from "react";
 // // import EditSpace from './codeEditor/EditSpace';
-// import SignupPage from './auth/register/page';
+// import Login from "./auth/login/page";
 // export default function Home() {
 //   return (
 //     <div className="h-screen dark:bg-slate-800 bg-slate-600 p-4 overflow-hidden">
 //       {/* <EditSpace /> */}
-//       <SignupPage/>
+//       <Login />
 //     </div>
 //   );
 // }
 
-import type { AppProps } from "next/app";
+import React from "react";
 import { AuthProvider } from "../context/AuthContext";
-import "../styles/globals.css";
+import Login from "./auth/login/page";
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <AuthProvider>
-      <Component {...pageProps} />
-    </AuthProvider>
+    <html lang="en">
+      <body>
+        <AuthProvider>
+          <Login />
+          {children}
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
-
-export default MyApp;
