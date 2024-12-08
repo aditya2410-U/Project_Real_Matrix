@@ -10,7 +10,7 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.replace("/login");
+      router.replace("/auth/login");
     }
   }, []);
 
