@@ -33,23 +33,48 @@
 //   );
 // }
 
-'use client';
-import { AuthProvider } from '@/context/AuthContext';
-import Login from './auth/login/page';
+// 'use client';
+// import { AuthProvider } from '@/context/AuthContext';
+// import Login from './auth/login/page';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <html lang="en">
+//       <body>
+//         <AuthProvider>
+//           {children}
+//           <Login />
+//         </AuthProvider>
+//       </body>
+//     </html>
+//   );
+// }
+
+
+'use client';
+
+// import LoginForm from '../components/LoginForm';
+import LoginForm from '@/components/ui/LoginForm';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      router.push('/codeeditor'); // Redirect if already logged in
+    }
+  }, [router]);
+
   return (
-    <html lang="en">
-      <body>
-        <AuthProvider>
-          {children}
-          <Login />
-        </AuthProvider>
-      </body>
-    </html>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <LoginForm />
+    </div>
   );
 }
