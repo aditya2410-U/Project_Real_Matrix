@@ -352,7 +352,7 @@ import RegisterForm from "@/components/ui/RegisterForm";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function Register() {
+function Register() {
   const router = useRouter();
 
   useEffect(() => {
@@ -368,3 +368,5 @@ export default function Register() {
     </div>
   );
 }
+
+export default Register;
