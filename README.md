@@ -71,7 +71,20 @@ New Features
 ![image](https://github.com/user-attachments/assets/576fc86c-6b8f-4a32-b5cc-43134e4cbdb7)
 
 
+Key Points:
 
+Uses context for global state management
+Implements protected routes
+Stores JWT in HttpOnly cookies
+Validates token on both client and server
+Handles authentication state across app
+
+Recommended Improvements:
+
+Add more robust error handling
+Implement password reset functionality
+Add email verification
+Implement refresh token mechanism
 
 ---
 
