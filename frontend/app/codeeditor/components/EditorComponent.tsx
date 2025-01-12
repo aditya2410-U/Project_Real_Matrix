@@ -9,7 +9,13 @@ import {
 import Editor from "@monaco-editor/react";
 import { Button, Tooltip, IconButton } from "@mui/material";
 import { PlayArrow, ContentCopy, SettingsOutlined } from "@mui/icons-material";
-import { Loader, TriangleAlert, Maximize2, Minimize2, Rocket } from "lucide-react";
+import {
+  Loader,
+  TriangleAlert,
+  Maximize2,
+  Minimize2,
+  Rocket,
+} from "lucide-react";
 import { codeSnippets, languageOptions } from "@/config/config";
 import { compileCode } from "@/actions/compile";
 import toast from "react-hot-toast";
@@ -29,7 +35,10 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
   const [output, setOutput] = useState<string[]>([]);
   const [err, setErr] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const editorRef = useRef(null);
+  const editorRef = useRef<any>(null);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipText, setTooltipText] = useState("");
+  const [cursorPosition, setCursorPosition] = useState({ line: 0, column: 0 });
   const wsRef = useRef<WebSocketService | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
@@ -44,7 +53,9 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
           if (content !== sourceCode) {
             setSourceCode(content);
             if (language && language !== languageOption.language) {
-              const newLangOption = languageOptions.find(opt => opt.language === language);
+              const newLangOption = languageOptions.find(
+                (opt) => opt.language === language
+              );
               if (newLangOption) {
                 setLanguageOption(newLangOption);
               }
@@ -63,6 +74,21 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
   function handleEditorDidMount(editor: any) {
     editorRef.current = editor;
     editor.focus();
+
+    // Add cursor position event listener
+    editor.onDidChangeCursorPosition((e: any) => {
+      const user = JSON.parse(localStorage.getItem("user") || "{}"); // Parse the stored JSON string
+      const email = user.email;
+      setCursorPosition({
+        line: e.position.lineNumber,
+        column: e.position.column,
+      });
+      setTooltipText(
+        // `Cursor is at line ${e.position.lineNumber}, column ${e.position.column} by User : ${email}`
+        `${email}`
+      );
+      setTooltipVisible(true);
+    });
   }
 
   function handleOnChange(value: string | undefined) {
@@ -94,28 +120,28 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
     };
     try {
       const result = await compileCode(requestData);
-      
+
       if (result.run.code === 0) {
         setErr(false);
         setOutput(result.run.output.split("\n"));
         toast.success("Compiled Successfully", {
           style: {
-            background: '#333',
-            color: '#fff',
+            background: "#333",
+            color: "#fff",
           },
-          icon: '🚀',
+          icon: "🚀",
         });
       } else {
         setErr(true);
         toast.error("Compilation Failed", {
           style: {
-            background: '#ff4500',
-            color: '#fff',
+            background: "#ff4500",
+            color: "#fff",
           },
-          icon: '❌',
+          icon: "❌",
         });
       }
-    
+
       setLoading(false);
     } catch (error) {
       setErr(true);
@@ -128,12 +154,12 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
     if (editorRef.current) {
       const code = editorRef.current.getValue();
       navigator.clipboard.writeText(code);
-      toast.success('Code Copied!', {
+      toast.success("Code Copied!", {
         style: {
-          background: '#333',
-          color: '#fff',
+          background: "#333",
+          color: "#fff",
         },
-        icon: '📋',
+        icon: "📋",
       });
     }
   }
@@ -143,9 +169,13 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
   }
 
   return (
-    <div 
+    <div
       className={`
-        ${isFullScreen ? 'fixed inset-0 z-50 bg-slate-900' : 'h-[fixed] bg-slate-900'} 
+        ${
+          isFullScreen
+            ? "fixed inset-0 z-50 bg-slate-900"
+            : "h-[fixed] bg-slate-900"
+        } 
         rounded-3xl shadow-2xl py-6 px-8 overflow-hidden 
         transition-all duration-300 ease-in-out
       `}
@@ -167,7 +197,7 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
             </div>
           )}
         </div>
-        
+
         {/* Rest of your header content remains the same */}
         <div className="flex items-center space-x-4">
           <Tooltip title="Copy Code">
@@ -197,13 +227,12 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
         </div>
       </div>
 
-      {/* Editor Area - remains the same */}
+      {/* Editor Area */}
       <div className="bg-black p-2 rounded-2xl border border-black/50 shadow-xl">
         <ResizablePanelGroup
           direction="horizontal"
           className="w-full rounded-lg border border-black/30 md:min-w-[450px]"
         >
-          {/* Code Editor Panel */}
           <ResizablePanel defaultSize={50} minSize={35}>
             <div className="relative h-full">
               <Editor
@@ -219,62 +248,76 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
                   glyphMargin: false,
                 }}
               />
+              {tooltipVisible && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: cursorPosition.line * 20, // Adjust based on line height
+                    left: cursorPosition.column * 8, // Adjust based on column width
+                    backgroundColor: "#f7f7f7", // Light background for readability
+                    color: "#333", // Dark text color for contrast
+                    padding: "8px 12px", // More padding for comfortable readability
+                    borderRadius: "6px", // Softer, rounded corners
+                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.15)", // A subtle, more defined shadow
+                    fontSize: "14px", // Slightly larger text size for better legibility
+                    fontFamily: "'Fira Code', monospace", // Monospace font for code style
+                    maxWidth: "300px", // Limit the width of the tooltip
+                    wordWrap: "break-word", // Ensure long lines break appropriately
+                    zIndex: 10,
+                    transition: "opacity 0.2s ease-in-out", // Smooth fade-in/out effect
+                    opacity: tooltipVisible ? 1 : 0, // Ensure smooth fade effect
+                    pointerEvents: "none", // Prevent the tooltip from interfering with mouse actions
+                  }}
+                >
+                  {tooltipText}
+                </div>
+              )}
             </div>
           </ResizablePanel>
 
           <ResizableHandle className="bg-black w-2 hover:bg-purple-700 transition-colors" />
 
-          {/* Output Panel - remains the same */}
           <ResizablePanel defaultSize={50} minSize={35}>
             <div className="space-y-3 bg-slate-900 min-h-screen">
-              {/* Your existing output panel code */}
               <div className="flex items-center justify-between bg-slate-950 px-6 py-2 rounded-t-xl">
                 <div className="flex items-center space-x-3">
                   <h2 className="text-white text-xl font-semibold">Output</h2>
                   {output.length > 0 && (
-                    <span className="bg-green-900/30 text-green-400 px-2 py-1 rounded-full text-xs">
+                    <span className="text-green-500 text-sm">
                       {output.length} lines
                     </span>
                   )}
                 </div>
-                {loading ? (
-                  <Button
-                    disabled
-                    className="bg-slate-200 hover:bg-purple-700 text-dark-900"
-                  >
-                    <Loader className="w-4 h-4 mr-2 animate-spin" />
-                    <span>Running please wait...</span>
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={executeCode}
-                    variant="contained"
-                    className="bg-purple-800 hover:bg-purple-500 text-white group"
-                    startIcon={<PlayArrow className="group-hover:animate-pulse" />}
-                  >
-                    Run Code
-                  </Button>
-                )}
+                <div className="flex space-x-3">
+                  <Tooltip title="Run Code">
+                    <Button
+                      variant="contained"
+                      className="bg-blue-600 text-white hover:bg-blue-500"
+                      startIcon={
+                        loading ? (
+                          <Loader className="animate-spin" />
+                        ) : (
+                          <PlayArrow />
+                        )
+                      }
+                      onClick={executeCode}
+                      disabled={loading}
+                    >
+                      {loading ? "Running..." : "Run"}
+                    </Button>
+                  </Tooltip>
+                </div>
               </div>
-              <div className="px-6 space-y-2 max-h-[400px] overflow-auto">
+
+              <div
+                className={`overflow-auto bg-black/80 p-6 h-3/4 text-sm text-white ${
+                  err ? "border-l-4 border-red-500" : ""
+                }`}
+              >
                 {err ? (
-                  <div className="flex items-center space-x-2 text-red-500 border border-red-600 px-6 py-6 rounded-lg bg-red-950/30">
-                    <TriangleAlert className="w-5 h-5 mr-2 flex-shrink-0 text-red-500" />
-                    <p className="text-xs text-red-300">
-                      Compilation Failed. Please check your code and try again!
-                    </p>
-                  </div>
+                  <TriangleAlert className="text-red-500 h-8 w-8 mx-auto" />
                 ) : (
-                  <>
-                    {output.map((item, index) => (
-                      <p
-                        key={`${item}-${index}`}
-                        className="text-sm text-green-500 bg-green-950/30 px-3 py-1 rounded"
-                      >
-                        {item}
-                      </p>
-                    ))}
-                  </>
+                  output.map((line, index) => <p key={index}>{line}</p>)
                 )}
               </div>
             </div>
