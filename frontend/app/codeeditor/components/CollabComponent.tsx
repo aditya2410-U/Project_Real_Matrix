@@ -115,7 +115,6 @@ const CollaborationDrawer: React.FC = () => {
             </div>
           </div>
 
-          {/* Permission Selector */}
           <div className="flex items-center space-x-4">
             <Settings className="text-purple-500" />
             <Select value={permission} onValueChange={setPermission}>
@@ -188,8 +187,11 @@ const CollaborationDrawer: React.FC = () => {
             <Button
               variant="outline"
               className="w-full bg-purple-700 text-white hover:bg-purple-800"
+              onClick={() => {
+                window.open(sessionLink, "_blank");
+              }}
             >
-              Save
+              Start Collaboration 🤖🤖🤖
             </Button>
           </DrawerClose>
         </DrawerFooter>
