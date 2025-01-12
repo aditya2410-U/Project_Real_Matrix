@@ -9,18 +9,13 @@ import {
 import Editor from "@monaco-editor/react";
 import { Button, Tooltip, IconButton } from "@mui/material";
 import { PlayArrow, ContentCopy, SettingsOutlined } from "@mui/icons-material";
-import {
-  Loader,
-  TriangleAlert,
-  Maximize2,
-  Minimize2,
-  Rocket,
-} from "lucide-react";
+import { Loader, TriangleAlert, Maximize2, Minimize2, Rocket } from "lucide-react";
 import { codeSnippets, languageOptions } from "@/config/config";
 import { compileCode } from "@/actions/compile";
 import toast from "react-hot-toast";
 import CollaborationDrawer from "./CollabComponent";
 import { WebSocketService } from "backend/app/lib/websocket";
+
 
 interface Props {
   sessionId: string;
@@ -35,10 +30,12 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
   const [output, setOutput] = useState<string[]>([]);
   const [err, setErr] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
+
   const editorRef = useRef<any>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState("");
   const [cursorPosition, setCursorPosition] = useState({ line: 0, column: 0 });
+
   const wsRef = useRef<WebSocketService | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
@@ -56,6 +53,7 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
               const newLangOption = languageOptions.find(
                 (opt) => opt.language === language
               );
+
               if (newLangOption) {
                 setLanguageOption(newLangOption);
               }
@@ -227,7 +225,7 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
         </div>
       </div>
 
-      {/* Editor Area */}
+      {/* Editor Area - remains the same */}
       <div className="bg-black p-2 rounded-2xl border border-black/50 shadow-xl">
         <ResizablePanelGroup
           direction="horizontal"
@@ -277,8 +275,10 @@ export default function EnhancedEditorComponent({ sessionId }: Props) {
 
           <ResizableHandle className="bg-black w-2 hover:bg-purple-700 transition-colors" />
 
+
           <ResizablePanel defaultSize={50} minSize={35}>
             <div className="space-y-3 bg-slate-900 min-h-screen">
+              {/* Your existing output panel code */}
               <div className="flex items-center justify-between bg-slate-950 px-6 py-2 rounded-t-xl">
                 <div className="flex items-center space-x-3">
                   <h2 className="text-white text-xl font-semibold">Output</h2>
