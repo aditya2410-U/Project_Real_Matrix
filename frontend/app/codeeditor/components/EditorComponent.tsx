@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import SelectLanguage, { selectedLanguageOptionProps } from "./SelectLanguage";
 import {
   ResizablePanelGroup,
@@ -7,29 +7,20 @@ import {
   ResizableHandle,
 } from "./ResizableComponent";
 import Editor from "@monaco-editor/react";
-import { 
-  Button, 
-  Tooltip, 
-  IconButton 
-} from "@mui/material";
-import { 
-  PlayArrow, 
-  ContentCopy, 
-  SettingsOutlined 
-} from "@mui/icons-material";
-import { 
-  Loader, 
-  TriangleAlert, 
-  Maximize2, 
-  Minimize2, 
-  Rocket 
-} from "lucide-react";
+import { Button, Tooltip, IconButton } from "@mui/material";
+import { PlayArrow, ContentCopy, SettingsOutlined } from "@mui/icons-material";
+import { Loader, TriangleAlert, Maximize2, Minimize2, Rocket } from "lucide-react";
 import { codeSnippets, languageOptions } from "@/config/config";
 import { compileCode } from "@/actions/compile";
 import toast from "react-hot-toast";
 import CollaborationDrawer from "./CollabComponent";
+import { WebSocketService } from "backend/app/lib/websocket";
 
-export default function EnhancedEditorComponent() {
+interface Props {
+  sessionId: string;
+}
+
+export default function EnhancedEditorComponent({ sessionId }: Props) {
   const [sourceCode, setSourceCode] = useState(
     codeSnippets[languageOptions[0].language]
   );
@@ -39,8 +30,36 @@ export default function EnhancedEditorComponent() {
   const [err, setErr] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const editorRef = useRef(null);
+  const wsRef = useRef<WebSocketService | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // Initialize WebSocket connection
+  useEffect(() => {
+    if (!wsRef.current) {
+      wsRef.current = new WebSocketService(
+        sessionId,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (content: any, language: string) => {
+          // Handle incoming changes
+          if (content !== sourceCode) {
+            setSourceCode(content);
+            if (language && language !== languageOption.language) {
+              const newLangOption = languageOptions.find(opt => opt.language === language);
+              if (newLangOption) {
+                setLanguageOption(newLangOption);
+              }
+            }
+          }
+        }
+      );
+      setIsConnected(true);
+    }
+
+    return () => {
+      wsRef.current?.disconnect();
+    };
+  }, [sessionId]);
+
   function handleEditorDidMount(editor: any) {
     editorRef.current = editor;
     editor.focus();
@@ -49,12 +68,17 @@ export default function EnhancedEditorComponent() {
   function handleOnChange(value: string | undefined) {
     if (value) {
       setSourceCode(value);
+      // Broadcast changes to other clients
+      wsRef.current?.sendMessage(value, languageOption.language);
     }
   }
 
   function onSelect(value: selectedLanguageOptionProps) {
     setLanguageOption(value);
-    setSourceCode(codeSnippets[value.language]);
+    const newCode = codeSnippets[value.language];
+    setSourceCode(newCode);
+    // Broadcast language change to other clients
+    wsRef.current?.sendMessage(newCode, value.language);
   }
 
   async function executeCode() {
@@ -121,7 +145,7 @@ export default function EnhancedEditorComponent() {
   return (
     <div 
       className={`
-        ${isFullScreen ? 'fixed inset-0 z-50 bg-slate-900' : 'h-[695px] bg-slate-900'} 
+        ${isFullScreen ? 'fixed inset-0 z-50 bg-slate-900' : 'h-[fixed] bg-slate-900'} 
         rounded-3xl shadow-2xl py-6 px-8 overflow-hidden 
         transition-all duration-300 ease-in-out
       `}
@@ -136,7 +160,15 @@ export default function EnhancedEditorComponent() {
           <div className="bg-purple-900/30 px-3 py-1 rounded-full text-purple-300 text-sm">
             {languageOption.language.toUpperCase()}
           </div>
+          {isConnected && (
+            <div className="bg-green-900/30 px-3 py-1 rounded-full text-green-300 text-sm flex items-center">
+              <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse" />
+              Connected
+            </div>
+          )}
         </div>
+        
+        {/* Rest of your header content remains the same */}
         <div className="flex items-center space-x-4">
           <Tooltip title="Copy Code">
             <IconButton onClick={handleCopyCode}>
@@ -165,7 +197,7 @@ export default function EnhancedEditorComponent() {
         </div>
       </div>
 
-      {/* Editor Area */}
+      {/* Editor Area - remains the same */}
       <div className="bg-black p-2 rounded-2xl border border-black/50 shadow-xl">
         <ResizablePanelGroup
           direction="horizontal"
@@ -192,9 +224,10 @@ export default function EnhancedEditorComponent() {
 
           <ResizableHandle className="bg-black w-2 hover:bg-purple-700 transition-colors" />
 
-          {/* Output Panel */}
+          {/* Output Panel - remains the same */}
           <ResizablePanel defaultSize={50} minSize={35}>
             <div className="space-y-3 bg-slate-900 min-h-screen">
+              {/* Your existing output panel code */}
               <div className="flex items-center justify-between bg-slate-950 px-6 py-2 rounded-t-xl">
                 <div className="flex items-center space-x-3">
                   <h2 className="text-white text-xl font-semibold">Output</h2>
